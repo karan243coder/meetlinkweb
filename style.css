@@ -25,25 +25,15 @@ body {
     background: #090e11; /* Desktop dark background around phone frame */
     color: var(--text-primary);
     min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow-x: hidden;
-}
-
-/* ============ SMARTPHONE FRAME MOCKUP (DESKTOP) ============ */
-.phone-container {
-    width: 100vw;
-    height: 100vh;
-    background: var(--wa-bg-deep);
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    overflow: hidden;
 }
 
 /* On Desktop/Laptop: Form it into a gorgeousCentered Vertical Smartphone interface! */
 @media (min-width: 769px) {
+    body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
     .phone-container {
         width: 440px;
         height: 92vh;
@@ -944,6 +934,17 @@ body {
 
 /* ============ RESPONSIVE & MOBILE DRAWERS ============ */
 @media (max-width: 768px) {
+    body {
+        display: block !important;
+        background: var(--wa-bg-deep) !important;
+    }
+    .phone-container {
+        width: 100vw !important;
+        height: 100vh !important;
+        border-radius: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
     .navbar { padding: 12px 14px; flex-direction: column; gap: 6px; }
     .nav-right { gap: 8px; }
     .hero { padding: 18px 12px 12px; }
