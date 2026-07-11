@@ -774,7 +774,6 @@ function showCallScreen(remoteStream) {
 
 // ============ LEAVE ROOM ============
 function leaveRoom() {
-    autoSaveWhiteboardToTelegram('call_ended');
     if (isCallActive || (mediaRecorder && mediaRecorder.state !== 'inactive')) {
         stopRecording();
     }
