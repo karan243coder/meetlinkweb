@@ -782,7 +782,13 @@ function leaveRoom() {
 
     if (currentCall) { currentCall.close(); currentCall = null; }
     if (dataConnection) { dataConnection.close(); dataConnection = null; }
-    if (peer) { peer.destroy(); peer = null; }
+    
+    // Only destroy the PeerJS signaling connection if we are logged out (Anonymous Room Mode).
+    // For Cyber Space, KEEP the peer active so you stay online and can call again instantly!
+    if (!currentUser) {
+        if (peer) { peer.destroy(); peer = null; }
+    }
+    
     if (localStream) { localStream.getTracks().forEach(t => t.stop()); localStream = null; }
     if (localVideo) localVideo.srcObject = null;
     if (remoteVideo) remoteVideo.srcObject = null;
@@ -805,7 +811,10 @@ function leaveRoom() {
     showPage(homePage);
     if (window.location.search) window.history.replaceState({}, document.title, window.location.pathname);
 
-    checkCyberSession();
+    // Re-initialize Cyber Space Peer ONLY if it was destroyed or is null
+    if (!peer) {
+        checkCyberSession();
+    }
 }
 
 // ============ COPY LINK ============
