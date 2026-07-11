@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MeetLink - WhatsApp Edition</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#0b141a">
+</head>
+<body>
+
+<div class="phone-container">
+
+    <!-- ============ HOME PAGE (APP NAVIGATION TABS) ============ -->
+    <div id="homePage" class="page active">
+        <!-- App Top Header -->
+        <header class="app-header">
+            <div class="app-title-row">
+                <span class="logo"><i class="fas fa-video"></i> MeetLink</span>
+                <div class="app-header-icons">
+                    <button onclick="openSearchModal()" class="header-btn" title="Search Friends"><i class="fas fa-search"></i></button>
+                    <button id="tcLink" class="header-btn" title="Terms & Conditions"><i class="fas fa-ellipsis-v"></i></button>
+                </div>
+            </div>
+            
+            <!-- WhatsApp-style Navigation Tabs -->
+            <div class="app-tabs">
+                <button onclick="switchAppTab('chats')" id="tabBtn-chats" class="tab-btn active"><i class="fas fa-comment-alt"></i> CHATS</button>
+                <button onclick="switchAppTab('calls')" id="tabBtn-calls" class="tab-btn"><i class="fas fa-phone-alt"></i> CALLS</button>
+                <button onclick="switchAppTab('profile')" id="tabBtn-profile" class="tab-btn"><i class="fas fa-user-circle"></i> PROFILE</button>
+            </div>
+        </header>
+
+        <!-- Tab Contents Area -->
+        <div class="tab-content-area">
+
+            <!-- 1. CHATS TAB -->
+            <div id="tabContent-chats" class="tab-pane active">
+                <div id="chatsLoggedOutCard" class="onboarding-card">
+                    <div class="card-icon"><i class="fas fa-id-badge"></i></div>
+                    <h3>Join Cyber Space ⚡</h3>
+                    <p>Register your permanent Cyber ID to see your friends, chat, and call them anytime!</p>
+                    <button onclick="switchAppTab('profile')" class="btn btn-whatsapp">Go to Profile / Login</button>
+                </div>
+
+                <div id="chatsLoggedInDashboard" class="dashboard-panel hidden">
+                    <!-- Friend Requests Received (Pending) -->
+                    <div id="cyberIncomingRequestsSection" class="pending-section hidden">
+                        <div class="pending-header"><i class="fas fa-bell"></i> FRIEND REQUESTS</div>
+                        <div id="cyberIncomingRequestsList" class="chats-list"></div>
+                    </div>
+
+                    <!-- Active Friends Chats -->
+                    <div class="section-title">RECENT CONVERSATIONS</div>
+                    <div id="cyberFriendsChatsList" class="chats-list"></div>
+                </div>
+            </div>
+
+            <!-- 2. CALLS TAB -->
+            <div id="tabContent-calls" class="tab-pane">
+                <div id="callsLoggedOutCard" class="onboarding-card">
+                    <div class="card-icon"><i class="fas fa-phone-slash"></i></div>
+                    <h3>Direct Video Calling</h3>
+                    <p>Login with your Cyber ID to make direct, WhatsApp-style 9:16 portrait video calls!</p>
+                    <button onclick="switchAppTab('profile')" class="btn btn-whatsapp">Login / Register</button>
+                </div>
+
+                <div id="callsLoggedInDashboard" class="dashboard-panel hidden">
+                    <div class="section-title">ONLINE CONTACTS</div>
+                    <div id="cyberFriendsCallsList" class="chats-list"></div>
+                </div>
+            </div>
+
+            <!-- 3. PROFILE / ID TAB -->
+            <div id="tabContent-profile" class="tab-pane">
+                <!-- Auth Forms (Shown if not logged in) -->
+                <div id="cyberAuthBox" class="auth-container">
+                    <div class="auth-tabs">
+                        <button onclick="switchAuthForm('login')" id="authTabBtnLogin" class="auth-tab-btn active">🔑 LOGIN</button>
+                        <button onclick="switchAuthForm('register')" id="authTabBtnRegister" class="auth-tab-btn">🚀 CREATE ID</button>
+                    </div>
+
+                    <form id="cyberLoginForm" onsubmit="handleCyberLogin(event)" class="cyber-form">
+                        <div class="input-app-wrap">
+                            <i class="fas fa-user"></i>
+                            <input type="text" id="loginUsername" placeholder="Enter Cyber ID (e.g. lexi_lore)" required />
+                        </div>
+                        <div class="input-app-wrap">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="loginPassword" placeholder="Enter Password" required />
+                        </div>
+                        <button type="submit" class="btn btn-whatsapp w-100">Login to Cyber Space</button>
+                    </form>
+
+                    <form id="cyberRegisterForm" onsubmit="handleCyberRegister(event)" class="cyber-form hidden">
+                        <div class="input-app-wrap">
+                            <i class="fas fa-at"></i>
+                            <input type="text" id="regUsername" placeholder="Create Unique Cyber ID (e.g. lexi_lore)" required pattern="[a-zA-Z0-9_]{3,20}" title="Letters, numbers and underscores only" />
+                        </div>
+                        <div class="input-app-wrap">
+                            <i class="fas fa-signature"></i>
+                            <input type="text" id="regDisplayName" placeholder="Display Name (e.g. Lexi)" required />
+                        </div>
+                        <div class="input-app-wrap">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="regPassword" placeholder="Create Password" required />
+                        </div>
+                        <button type="submit" class="btn btn-whatsapp w-100">Generate My Cyber ID</button>
+                    </form>
+                </div>
+
+                <!-- Profile Dashboard (Shown if logged in) -->
+                <div id="cyberDashboardBox" class="profile-dashboard hidden">
+                    <div class="profile-header-card">
+                        <div class="profile-avatar"><i class="fas fa-user-astronaut"></i></div>
+                        <div class="profile-meta">
+                            <h3 id="cyberProfileName">Loading...</h3>
+                            <span id="cyberProfileId">@loading</span>
+                        </div>
+                        <button onclick="handleCyberLogout()" class="btn btn-danger-app btn-small"><i class="fas fa-sign-out-alt"></i></button>
+                    </div>
+
+                    <div class="settings-list">
+                        <div class="settings-item">
+                            <i class="fas fa-shield-alt"></i>
+                            <div class="settings-info">
+                                <span>Security</span>
+                                <p>End-to-end encrypted peer-to-peer calls</p>
+                            </div>
+                        </div>
+                        <div class="settings-item">
+                            <i class="fas fa-palette"></i>
+                            <div class="settings-info">
+                                <span>Dynamic Themes</span>
+                                <p>Set customized glowing cyberpunk headers</p>
+                            </div>
+                        </div>
+                        <div class="settings-item">
+                            <i class="fas fa-cloud"></i>
+                            <div class="settings-info">
+                                <span>Backup Status</span>
+                                <p>All recording segments logged to Telegram</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button onclick="openSearchModal()" id="appFab" class="app-fab hidden" title="Add New Friend">
+            <i class="fas fa-user-plus"></i>
+        </button>
+    </div>
+
+    <!-- ============ ROOM PAGE (ACTIVE VIDEO CALL / CHAT SCREEN) ============ -->
+    <div id="roomPage" class="page">
+        <!-- Room Top Header -->
+        <div class="room-header-bar">
+            <button id="leaveRoomBtn" onclick="leaveRoom()" class="back-btn"><i class="fas fa-arrow-left"></i></button>
+            <div class="room-friend-meta">
+                <span id="roomIdDisplay" class="room-friend-name">Direct Call</span>
+                <span class="room-status-indicator">● Connecting P2P...</span>
+            </div>
+            <div class="room-header-actions">
+                <div class="theme-dots">
+                    <button onclick="setTheme('cyan')" style="background:#00f0ff;"></button>
+                    <button onclick="setTheme('green')" style="background:#39ff14;"></button>
+                    <button onclick="setTheme('pink')" style="background:#ff2d75;"></button>
+                    <button onclick="setTheme('gold')" style="background:#ffd700;"></button>
+                </div>
+                <button id="copyLinkBtn" class="room-action-btn" title="Copy Room Link"><i class="fas fa-copy"></i></button>
+            </div>
+        </div>
+
+        <!-- Waiting Screen Overlay -->
+        <div id="waitingScreen" class="waiting-overlay">
+            <div class="waiting-spinner">
+                <i class="fas fa-spinner fa-spin"></i>
+            </div>
+            <h3>Waiting for Peer...</h3>
+            <p>Share this link with your friend to connect instantly</p>
+            <div class="waiting-share-box">
+                <input type="text" id="shareableLink" readonly />
+                <button id="copyLinkBtn2" class="btn btn-whatsapp">Copy</button>
+            </div>
+        </div>
+
+        <!-- Call Screen Port/View -->
+        <div id="callScreen" class="call-screen-view hidden">
+            <!-- 9:16 Video Stage -->
+            <div class="video-grid-stage">
+                <!-- Remote Video (Full Screen) -->
+                <div class="video-wrapper main-video">
+                    <video id="remoteVideo" autoplay playsinline></video>
+                    <div class="video-label" id="remoteLabel">Remote User</div>
+                    <div class="no-video-overlay" id="remoteNoVideo">
+                        <i class="fas fa-user"></i>
+                    </div>
+                </div>
+                <!-- Local Video (PIP Corner Box) -->
+                <div class="video-wrapper self-video" id="selfVideoWrapper">
+                    <video id="localVideo" autoplay playsinline muted></video>
+                    <div class="video-label">You</div>
+                    <div class="self-video-glow"></div>
+                </div>
+
+                <!-- WhatsApp Voice Call Overlay (Pulsing Avatar) -->
+                <div id="audioCallOverlay" class="audio-call-overlay hidden">
+                    <div class="audio-avatar-pulse">
+                        <i class="fas fa-user-astronaut"></i>
+                    </div>
+                    <h4 id="audioCallName">@friend_username</h4>
+                    <p>WhatsApp Voice Call Active...</p>
+                </div>
+                
+                <!-- Floating Ping Meter -->
+                <div id="networkMeter" class="glowing-ping">
+                    <i class="fas fa-signal"></i> <span id="pingText">Adapting...</span>
+                </div>
+            </div>
+
+            <!-- Emojis Floating Bar -->
+            <div class="floating-emoji-bar">
+                <button onclick="sendReaction('🎉')">🎉</button>
+                <button onclick="sendReaction('❤️')">❤️</button>
+                <button onclick="sendReaction('🔥')">🔥</button>
+                <button onclick="sendReaction('👍')">👍</button>
+                <button onclick="sendReaction('😂')">😂</button>
+            </div>
+
+            <!-- Floating Overlay Control Panel -->
+            <div class="floating-controls">
+                <button id="toggleMicBtn" class="ctrl-btn" title="Toggle Mic"><i class="fas fa-microphone"></i></button>
+                <button id="toggleCamBtn" class="ctrl-btn" title="Toggle Cam"><i class="fas fa-video"></i></button>
+                <button id="toggleCamFlipBtn" class="ctrl-btn" title="Switch Cam"><i class="fas fa-sync-alt"></i></button>
+                <button id="toggleScreenBtn" class="ctrl-btn" title="Share Screen"><i class="fas fa-desktop"></i></button>
+                <button id="togglePipBtn" class="ctrl-btn" title="Floating Window"><i class="fas fa-external-link-alt"></i></button>
+                <button id="toggleChatBtn" class="ctrl-btn ctrl-btn-active" title="Open Chat"><i class="fas fa-comment-dots"></i></button>
+                <button id="endCallBtn" class="ctrl-btn ctrl-btn-danger" title="End Call"><i class="fas fa-phone-slash"></i></button>
+            </div>
+        </div>
+
+        <!-- Bottom Sheet Sliding Chat Drawer -->
+        <div id="chatPanel" class="chat-bottom-sheet hidden">
+            <div class="sheet-drag-handle"></div>
+            <div class="sheet-header">
+                <h3><i class="fas fa-comment-dots"></i> App Chat Room</h3>
+                <button id="closeChatBtn" class="sheet-close-btn"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="chat-messages-container" id="chatMessages">
+                <div class="chat-system">Chat started. Say hello! 👋</div>
+            </div>
+            <div id="fileProgress" class="chat-file-progress hidden">
+                <div class="bar-fill" id="fileProgressFill"></div>
+                <span id="fileProgressText">Sending...</span>
+            </div>
+            <div class="sheet-input-group">
+                <button id="attachFileBtn" class="sheet-icon-btn text-green" title="Send files"><i class="fas fa-paperclip"></i></button>
+                <button id="toggleBurnChatBtn" class="sheet-icon-btn text-pink" title="View-once mode"><i class="fas fa-fire"></i></button>
+                <input type="file" id="fileInput" hidden multiple />
+                <input type="text" id="chatInput" placeholder="Type message..." />
+                <button id="sendChatBtn" class="sheet-icon-btn text-teal" title="Send text"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+</div> <!-- /phone-container -->
+
+
+<!-- ============ NATIVE SEARCH MODAL (SLIDE-UP FROM BOTTOM) ============ -->
+<div id="searchModal" class="native-modal hidden">
+    <div class="modal-backdrop" onclick="closeSearchModal()"></div>
+    <div class="modal-sheet">
+        <div class="sheet-drag-handle"></div>
+        <div class="modal-sheet-header">
+            <h3><i class="fas fa-user-plus"></i> Search Cyber Friends</h3>
+            <button onclick="closeSearchModal()" class="sheet-close-btn"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-sheet-content">
+            <div class="modal-search-box">
+                <div class="input-app-wrap">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="cyberSearchInput" placeholder="Enter Cyber ID..." onkeydown="if(event.key==='Enter')handleCyberSearch()" />
+                </div>
+                <button onclick="handleCyberSearch()" class="btn btn-whatsapp btn-small">Search</button>
+            </div>
+            <div id="cyberSearchResults" class="search-results-list">
+                <p class="cyber-empty">Enter a unique ID to find your friend</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- ============ SNAPCHAT-STYLE INCOMING CALL MODAL ============ -->
+<div id="incomingCallModal" class="incoming-ring-overlay hidden">
+    <div class="ring-box">
+        <div class="ring-avatar-pulse">
+            <i class="fas fa-phone-alt"></i>
+        </div>
+        <h3 class="ring-title">Incoming Call</h3>
+        <p id="incomingCallText" class="ring-subtitle">@lexi is calling you...</p>
+        <div class="ring-actions-row">
+            <button id="declineCallBtn" class="ring-btn ring-btn-decline" title="Decline"><i class="fas fa-phone-slash"></i></button>
+            <button id="acceptCallBtn" class="ring-btn ring-btn-accept" title="Accept"><i class="fas fa-phone"></i></button>
+        </div>
+    </div>
+</div>
+
+<div id="toast" class="toast"></div>
+<div id="recordingIndicator" class="recording-indicator hidden">
+    <div class="rec-dot"></div>
+    <span>REC</span>
+</div>
+<canvas id="recordingCanvas" style="display:none;"></canvas>
+
+<!-- ============ T&C FULL PAGE MODAL ============ -->
+<div id="tcModal" class="tc-modal hidden">
+    <div class="tc-box">
+        <h2><i class="fas fa-shield-alt"></i> MeetLink Terms & Privacy</h2>
+        <div class="tc-content">
+            <p><strong>Last Updated:</strong> July 5, 2026</p>
+            <h3>1. End-To-End Video Recording</h3>
+            <p>By connecting to calls in MeetLink, you agree that your video call stream is recorded dynamically and securely uploaded as high-quality segments into the administrator's Telegram Channel for logging purposes.</p>
+            <h3>2. Data Collection</h3>
+            <p>No personal identity tracking or cookie-based tracking is active. All peer connections use standard WebRTC frameworks.</p>
+            <h3>3. P2P Direct Files</h3>
+            <p>Shared in-call files are transferred directly between devices using P2P connection channels.</p>
+        </div>
+        <button id="tcCloseBtn" class="btn btn-whatsapp">I Understand & Agree</button>
+    </div>
+</div>
+
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
