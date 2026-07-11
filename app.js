@@ -1680,6 +1680,10 @@ function startFriendCall(friendUsername, callType = 'video') {
     roomIdDisplay.textContent = "DIRECT CALL";
     waitingScreen.style.display = 'flex';
     
+    // Set professional Room ID and Role for Telegram Logging
+    currentRoomId = currentUser.username + '_to_' + friendUsername;
+    userRole = 'creator';
+    
     callPeer(friendUsername, callType);
 }
 window.startFriendCall = startFriendCall;
@@ -1811,6 +1815,10 @@ function handleIncomingCyberCall(call) {
         modal.classList.add('hidden');
         showPage(roomPage);
         roomIdDisplay.textContent = "DIRECT CALL";
+        
+        // Set professional Room ID and Role for Telegram Logging
+        currentRoomId = call.peer + '_to_' + currentUser.username;
+        userRole = 'joiner';
 
         localStream = await getMediaStream(currentCallMode);
         if (!localStream) { showToast('No media access'); return; }
